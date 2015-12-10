@@ -20,7 +20,6 @@ module Data.Time.Zones.Read (
   parseOlson,
   ) where
 
-import Control.Applicative
 import Control.Exception (assert)
 import Control.Monad
 import Data.Binary
@@ -28,7 +27,6 @@ import Data.Binary.Get
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as BL
 import Data.Maybe
-import Data.Vector.Generic (stream, unstream)
 import qualified Data.Vector.Unboxed as VU
 import qualified Data.Vector as VB
 import Data.Int
@@ -160,7 +158,7 @@ olsonGetWith szTime getTime = do
           lInfos = VU.toList infos
           first = head $ filter (not . isDst) lInfos ++ lInfos
       diffs = VU.map gmtOff eInfos
-      tzInfos = VB.map isDstName $ unstream $ stream eInfos
+      tzInfos = VB.map isDstName $ VB.convert eInfos
   return $ TZ eTransitions diffs tzInfos
 
 abbrForInd :: Int -> BS.ByteString -> String
